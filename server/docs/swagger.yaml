@@ -53,6 +53,10 @@ definitions:
     properties:
       accessKey:
         type: string
+      bucket:
+        type: string
+      imgPath:
+        type: string
       secretKey:
         type: string
     type: object
@@ -123,6 +127,8 @@ definitions:
     properties:
       abbreviation:
         type: string
+      autoCreateApiToSql:
+        type: boolean
       fields:
         items:
           $ref: '#/definitions/model.Field'
@@ -130,6 +136,11 @@ definitions:
       packageName:
         type: string
       structName:
+        type: string
+    type: object
+  model.Category:
+    properties:
+      name:
         type: string
     type: object
   model.ExaCustomer:
@@ -161,11 +172,18 @@ definitions:
     properties:
       columnName:
         type: string
+      fieldDesc:
+        type: string
       fieldJson:
         type: string
       fieldName:
         type: string
       fieldType:
+        type: string
+    type: object
+  model.Info:
+    properties:
+      desc:
         type: string
     type: object
   model.SysApi:
@@ -391,7 +409,7 @@ definitions:
         $ref: '#/definitions/model.SysAuthority'
         type: object
       oldAuthorityId:
-        type: integer
+        type: string
     type: object
 info:
   contact: {}
@@ -411,7 +429,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.SysApi'
-          type: object
       produces:
       - application/json
       responses:
@@ -435,7 +452,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.SysApi'
-          type: object
       produces:
       - application/json
       responses:
@@ -475,7 +491,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request.GetById'
-          type: object
       produces:
       - application/json
       responses:
@@ -499,7 +514,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request.SearchApiParams'
-          type: object
       produces:
       - application/json
       responses:
@@ -523,7 +537,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.SysApi'
-          type: object
       produces:
       - application/json
       responses:
@@ -547,7 +560,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/response.SysAuthorityCopyResponse'
-          type: object
       produces:
       - application/json
       responses:
@@ -571,7 +583,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.SysAuthority'
-          type: object
       produces:
       - application/json
       responses:
@@ -595,7 +606,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.SysAuthority'
-          type: object
       produces:
       - application/json
       responses:
@@ -619,7 +629,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request.PageInfo'
-          type: object
       produces:
       - application/json
       responses:
@@ -643,7 +652,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.SysAuthority'
-          type: object
       produces:
       - application/json
       responses:
@@ -667,7 +675,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.SysAuthority'
-          type: object
       produces:
       - application/json
       responses:
@@ -691,7 +698,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.AutoCodeStruct'
-          type: object
       produces:
       - application/json
       responses:
@@ -720,7 +726,7 @@ paths:
       summary: 生成验证码
       tags:
       - base
-  /base/captcha/:
+  /base/captcha/:captchaId:
     get:
       consumes:
       - application/json
@@ -745,7 +751,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request.RegisterAndLoginStruct'
-          type: object
       produces:
       - application/json
       responses:
@@ -765,7 +770,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.SysUser'
-          type: object
       produces:
       - application/json
       responses:
@@ -787,7 +791,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request.CasbinInReceive'
-          type: object
       produces:
       - application/json
       responses:
@@ -811,7 +814,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request.CasbinInReceive'
-          type: object
       produces:
       - application/json
       responses:
@@ -835,7 +837,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request.CasbinInReceive'
-          type: object
       produces:
       - application/json
       responses:
@@ -848,6 +849,121 @@ paths:
       summary: 获取权限列表
       tags:
       - casbin
+  /category/createCategory:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建Category
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Category'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建Category
+      tags:
+      - Category
+  /category/deleteCategory:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除Category
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Category'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除Category
+      tags:
+      - Category
+  /category/findCategory:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用id查询Category
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Category'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用id查询Category
+      tags:
+      - Category
+  /category/getCategoryList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 分页获取Category列表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.PageInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取Category列表
+      tags:
+      - Category
+  /category/updateCategory:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 更新Category
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Category'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新Category
+      tags:
+      - Category
   /customer/customer:
     delete:
       consumes:
@@ -859,7 +975,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.ExaCustomer'
-          type: object
       produces:
       - application/json
       responses:
@@ -882,7 +997,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.ExaCustomer'
-          type: object
       produces:
       - application/json
       responses:
@@ -905,7 +1019,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.ExaCustomer'
-          type: object
       produces:
       - application/json
       responses:
@@ -928,7 +1041,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.ExaCustomer'
-          type: object
       produces:
       - application/json
       responses:
@@ -952,7 +1064,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request.PageInfo'
-          type: object
       produces:
       - application/json
       responses:
@@ -996,7 +1107,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.ExaFileUploadAndDownload'
-          type: object
       produces:
       - application/json
       responses:
@@ -1042,7 +1152,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request.PageInfo'
-          type: object
       produces:
       - application/json
       responses:
@@ -1099,6 +1208,121 @@ paths:
       summary: 上传文件示例
       tags:
       - ExaFileUploadAndDownload
+  /info/createInfo:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建Info
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Info'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建Info
+      tags:
+      - Info
+  /info/deleteInfo:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除Info
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Info'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除Info
+      tags:
+      - Info
+  /info/findInfo:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用id查询Info
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Info'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用id查询Info
+      tags:
+      - Info
+  /info/getInfoList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 分页获取Info列表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.PageInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取Info列表
+      tags:
+      - Info
+  /info/updateInfo:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 更新Info
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Info'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新Info
+      tags:
+      - Info
   /jwt/jsonInBlacklist:
     post:
       consumes:
@@ -1126,7 +1350,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request.AuthorityIdInfo'
-          type: object
       produces:
       - application/json
       responses:
@@ -1150,7 +1373,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.SysBaseMenu'
-          type: object
       produces:
       - application/json
       responses:
@@ -1174,7 +1396,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request.AddMenuAuthorityInfo'
-          type: object
       produces:
       - application/json
       responses:
@@ -1198,7 +1419,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request.GetById'
-          type: object
       produces:
       - application/json
       responses:
@@ -1222,7 +1442,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request.GetById'
-          type: object
       produces:
       - application/json
       responses:
@@ -1244,7 +1463,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request.RegisterAndLoginStruct'
-          type: object
       produces:
       - application/json
       responses:
@@ -1266,7 +1484,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request.RegisterAndLoginStruct'
-          type: object
       produces:
       - application/json
       responses:
@@ -1290,7 +1507,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request.PageInfo'
-          type: object
       produces:
       - application/json
       responses:
@@ -1314,7 +1530,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.SysBaseMenu'
-          type: object
       produces:
       - application/json
       responses:
@@ -1336,7 +1551,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.System'
-          type: object
       produces:
       - application/json
       responses:
@@ -1372,7 +1586,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.System'
-          type: object
       produces:
       - application/json
       responses:
@@ -1394,7 +1607,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request.ChangePasswordStruct'
-          type: object
       produces:
       - application/json
       responses:
@@ -1417,8 +1629,7 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/request.SetUserAuth'
-          type: object
+          $ref: '#/definitions/request.GetById'
       produces:
       - application/json
       responses:
@@ -1442,7 +1653,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request.PageInfo'
-          type: object
       produces:
       - application/json
       responses:
@@ -1466,7 +1676,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request.SetUserAuth'
-          type: object
       produces:
       - application/json
       responses:
@@ -1515,7 +1724,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.SysWorkflow'
-          type: object
       produces:
       - application/json
       responses:
